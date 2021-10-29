@@ -35,13 +35,98 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 		button 'btn_resetXForm' "XForm" width:45 pos:[455,122] tooltip:"Reset XForm and convert to editable poly"
 		button 'btn_resetPos' "Reset Pos" width:60 pos:[505,122] tooltip:"Reset XYZ coordinates"
 	
-	groupBox materialsoptions "Material Options" pos:[5,155] width:590 height:70
+	groupBox materialsoptions "Material Options" pos:[5,155] width:590 height:40
 		button 'btn_material_editor' "Material Editor" width:110 height:20 pos:[10,170]
 		button 'btn_copy_material' "Copy Lib" width:60 height:20 pos:[125,170]
 		button 'btn_paste_material' "Paste Lib" width:60 height:20 pos:[190,170]
 		button 'btn_convert_material_to_col' "Default Collision Material" width:140 height:20 pos:[255,170] tooltip:"Apply collision default material to selected object"
+		button 'btn_Export' "Export" width:55 height:25 pos:[5,200]
+		button 'btn_Import' "Import" width:55 height:25 pos:[65,200]
 		
 	
+
+	on btn_Export pressed do (
+		local	GUIMgr = GIMS.Core.GUIMgr,
+				UpdateProgress = GUIMgr.UpdateProgress,
+				SavePath = (GetSavePath Caption:"Select a location to export" InitialDir:GUIMgr.LastPath)
+				
+		
+		if Have SavePath then (
+			Append SavePath "\\"
+			GUIMgr.LastPath = SavePath
+			GUIMgr.InitProgress #(
+				"Collect objects from scene"
+			) Title:"Export"
+			UpdateProgress #Stage 1
+			local	Objs = (GIMS.Core.MAXFactory.SceneOps.GetObjsToExport()),
+					HaveObjects = (Objs.Count != 0),
+					AddResult = GIMS.Core.SystemMgr.AddResult
+			if HaveObjects then (
+				local	MaxMemUsage = 0.9,
+						MemInfo = (SysInfo.GetSystemMemoryInfo()),
+						GBDiv = (1024L * 1024L * 1024L),
+						RAMFree = ((MemInfo[3] as Float) / GBDiv),
+						RAMCanBeUsed = (RAMFree * MaxMemUsage),
+						SwapFree = ((MemInfo[5] as Float) / GBDiv),
+						MemFree = (RAMFree + SwapFree)
+				for CNode in Objs do (
+					local	CNodeFaceCount = (Export_GetCNodeFaceCount CNode 0),
+							ProjMemoryFootprint = ((0.001 * CNodeFaceCount) / 28)
+					if ProjMemoryFootprint > RAMCanBeUsed then (
+						if ProjMemoryFootprint > MemFree then (
+							local	SS = (StringStream "")
+							Format "Model or dictionary \"%\" contains % faces, and it can take a lot of time and memory to export it.\n" CNode.Obj.Name CNodeFaceCount To:SS
+							Format "Projected memory usage is around % GB, while you have only % GB of free memory(% GB RAM, % GB Swap).\n" ProjMemoryFootprint MemFree RAMFree SwapFree To:SS
+							Format "You should consider splitting that model into multiple pieces.\n" To:SS
+							AddResult #Error (SS as String)
+							Free SS
+						) else (
+							local	SS = (StringStream "")
+							Format "Model or dictionary \"%\" contains % faces, and it can take a lot of time and memory to export it.\n" CNode.Obj.Name CNodeFaceCount To:SS
+							Format "Projected memory usage is around % GB, while you have % GB of free RAM and % GB of free Swap memory.\n" ProjMemoryFootprint RAMFree SwapFree To:SS
+							Format "You can continue at your own risk if you have most of the swap memory on an SSD disk,\n" To:SS
+							Format "but it will be better to split that model into multiple pieces." To:SS
+							AddResult #Warning (SS as String)
+							Free SS
+						)
+					)
+					GIMS.Core.ArrayOps.Dispose MeshInfos
+				)
+				Free MemInfo
+			) else
+				AddResult #Error "Nothing found to export."
+			GIMS.Core.ObjectMgr.ExchangeData = #(#(GIMS.CurrentGame, 2, #Export_Select, 2), Objs, SavePath)
+			GUIMgr.EndProgress true Continueable:HaveObjects
+		)
+	)
+	
+	on btn_Import pressed do (
+		GIMS.Core.ObjectMgr.ExchangeData = #(
+			undefined,
+			(
+				GIMS.Core.GUI.SelectFiles \
+				"Select the resources to load" \
+				true \
+				"GTA V openFormats|*.obn;*.obd;*.odr;*.odd;*.ovr|GTA V drawables|*.odr;*.odd|GTA V bounds|*.obn;*.obd"
+			)
+		)
+		/**/
+		
+		/*TODO remove, distantlights and OVR support*
+		GIMS.Core.ObjectMgr.ExchangeData = #(
+			undefined,
+			(
+				GIMS.Core.GUI.SelectFiles \
+				"Select the resources to load" \
+				true \
+				"GTA V openFormats, paths|*.obn;*.obd;*.odr;*.odd;distantlights_hd.dat|GTA V drawables|*.odr;*.odd|GTA V bounds|*.obn;*.obd|GTA V Paths|*.ovr;distantlights_hd.dat"
+			)
+		)
+		/**/
+		
+		Import_Files Sender Args
+	)
+
 	---------------------------
 	-- APPLY MODIFIERS
 	on btn_gamemeshmodifier pressed do
