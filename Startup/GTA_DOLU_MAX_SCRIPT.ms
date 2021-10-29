@@ -40,8 +40,11 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 		button 'btn_copy_material' "Copy Lib" width:60 height:20 pos:[125,170]
 		button 'btn_paste_material' "Paste Lib" width:60 height:20 pos:[190,170]
 		button 'btn_convert_material_to_col' "Default Collision Material" width:140 height:20 pos:[255,170] tooltip:"Apply collision default material to selected object"
-		button 'btn_Export' "Export" width:55 height:25 pos:[5,200]
-		button 'btn_Import' "Import" width:55 height:25 pos:[65,200]
+	
+	/* TODO- IMPORT EXPORT SHORTCUTS
+	 
+	button 'btn_Export' "Export" width:55 height:25 pos:[5,200]
+	button 'btn_Import' "Import" width:55 height:25 pos:[65,200]
 		
 	
 
@@ -110,9 +113,8 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 				"GTA V openFormats|*.obn;*.obd;*.odr;*.odd;*.ovr|GTA V drawables|*.odr;*.odd|GTA V bounds|*.obn;*.obd"
 			)
 		)
-		/**/
 		
-		/*TODO remove, distantlights and OVR support*
+		TODO remove, distantlights and OVR support
 		GIMS.Core.ObjectMgr.ExchangeData = #(
 			undefined,
 			(
@@ -122,11 +124,10 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 				"GTA V openFormats, paths|*.obn;*.obd;*.odr;*.odd;distantlights_hd.dat|GTA V drawables|*.odr;*.odd|GTA V bounds|*.obn;*.obd|GTA V Paths|*.ovr;distantlights_hd.dat"
 			)
 		)
-		/**/
 		
 		Import_Files Sender Args
 	)
-
+	*/
 	---------------------------
 	-- APPLY MODIFIERS
 	on btn_gamemeshmodifier pressed do
