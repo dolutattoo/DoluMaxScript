@@ -5,7 +5,7 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 	groupBox modifiers "GTAV Modifiers" pos:[5,5] width:150 height:65
 		button 'btn_gamemeshmodifier' "Game Mesh" pos:[10,20] width:80 height:20 tooltip:"Apply Game Mesh modifier (Drawable)"
 		button 'btn_meshmodifier' "Mesh" pos:[95,20] width:55 height:20 tooltip:"Apply Mesh modifier (Collision)"
-		button 'btn_primitive_box_col' "Prim Box" pos:[10,45] width:60 height:20 tooltip:"Convert Box to GTAV box (only for primitives)"
+		button 'btn_primitive_box_col' "Primitive Box" pos:[10,45] width:80 height:20 tooltip:"Convert Box to GTAV box (only for primitives)"
 
 	groupBox createmodel "GTAV Models" pos:[165,5] width:155 height:65
 		button 'btn_createmodel' "Model"  pos:[170,22] width:55 tooltip:"Create a Drawable Model and apply Game Mesh modifier"
@@ -347,7 +347,7 @@ utility DOLU_MAX_SCRIPT2 "Dolu Max Script" (
                 menu.placement = #normal
             )
         )
-		createdialog DOLU_MAX_SCRIPT 600 175 935 757
+		createdialog DOLU_MAX_SCRIPT 600 230 935 690
 	)
 	
     on open_cred_menu pressed do (
