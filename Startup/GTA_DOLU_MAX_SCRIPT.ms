@@ -221,8 +221,8 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 	)
 	
 	on btn_paintvertex pressed do (
-		for obj in selection do (			
-			if (classof(obj) == Editable_Poly) or (classof(obj) == Editable_Mesh) then
+		for obj in selection do (
+			if (classof(obj) == Editable_Mesh) then
 			(	
 				setNumCPVVerts obj obj.numverts
 				defaultVCFaces obj
@@ -231,7 +231,7 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 					setvertcolor obj n vColor
 				)
 				print "[DoluMaxScript] Vertex color applied !"
-			) else messagebox "Object needs to be set as Editable Poly or Editable Mesh before to apply the vertex color."
+			) else messagebox "Object needs to be an Editable Mesh before to apply the vertex color."
 		)
 	) 
 	
