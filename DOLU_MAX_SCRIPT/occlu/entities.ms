@@ -62,7 +62,7 @@ fn ReadEntitiesFromYmap =
 			local XmlElement_CEntityDef = dotNetObject "System.Xml.XmlElement" Enumerator.Current
 			local type = XmlElement_CEntityDef.GetAttribute("type")
 			
-			if(type == "CEntityDef")then
+			if (type == "CEntityDef") or (type == "CMloInstanceDef") then
 			(
 				local archetypeName = XmlElement_CEntityDef.Item["archetypeName"].InnerText
 				local flags = XmlElement_CEntityDef.Item["flags"].GetAttribute("value")
