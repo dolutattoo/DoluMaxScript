@@ -42,40 +42,40 @@ fn ReadEntitiesFromYmap =
 				
 		while Enumerator.MoveNext() do
 		(
-			local XmlElement_CEntityDef = dotNetObject "System.Xml.XmlElement" Enumerator.Current
-			local type = XmlElement_CEntityDef.GetAttribute("type")
+			local XmlElement_Item = dotNetObject "System.Xml.XmlElement" Enumerator.Current
+			local type = XmlElement_Item.GetAttribute("type")
 			
 			if (type == "CEntityDef") or (type == "CMloInstanceDef") then
 			(
-				local archetypeName = XmlElement_CEntityDef.Item["archetypeName"].InnerText
-				local flags = XmlElement_CEntityDef.Item["flags"].GetAttribute("value")
-				local guid = XmlElement_CEntityDef.Item["guid"].GetAttribute("value")
+				local archetypeName = XmlElement_Item.Item["archetypeName"].InnerText
+				local flags = XmlElement_Item.Item["flags"].GetAttribute("value")
+				local guid = XmlElement_Item.Item["guid"].GetAttribute("value")
 	
-				local XmlElement_position = XmlElement_CEntityDef.Item["position"]
+				local XmlElement_position = XmlElement_Item.Item["position"]
 				local position_x = XmlElement_position.GetAttribute("x") as double
 				local position_y = XmlElement_position.GetAttribute("y") as double
 				local position_z = XmlElement_position.GetAttribute("z") as double
 				local _position = [position_x,position_y,position_z]
 				
-				local XmlElement_rotation = XmlElement_CEntityDef.Item["rotation"]
+				local XmlElement_rotation = XmlElement_Item.Item["rotation"]
 				local rotation_x = XmlElement_rotation.GetAttribute("x") as double
 				local rotation_y = XmlElement_rotation.GetAttribute("y") as double
 				local rotation_z = XmlElement_rotation.GetAttribute("z") as double
 				local rotation_w = XmlElement_rotation.GetAttribute("w") as double
 				local _rotation = quat rotation_x rotation_y rotation_z rotation_w
 				
-				local scaleXY = XmlElement_CEntityDef.Item["scaleXY"].GetAttribute("value") as double
-				local scaleZ = XmlElement_CEntityDef.Item["scaleZ"].GetAttribute("value") as double
-				local parentIndex = XmlElement_CEntityDef.Item["parentIndex"].GetAttribute("value")
-				local lodDist = XmlElement_CEntityDef.Item["lodDist"].GetAttribute("value")
-				local childLodDist = XmlElement_CEntityDef.Item["childLodDist"].GetAttribute("value")
-				local lodLevel = XmlElement_CEntityDef.Item["lodLevel"].InnerText
-				local numChildren = XmlElement_CEntityDef.Item["numChildren"].GetAttribute("value")
-				local priorityLevel = XmlElement_CEntityDef.Item["priorityLevel"].InnerText
+				local scaleXY = XmlElement_Item.Item["scaleXY"].GetAttribute("value") as double
+				local scaleZ = XmlElement_Item.Item["scaleZ"].GetAttribute("value") as double
+				local parentIndex = XmlElement_Item.Item["parentIndex"].GetAttribute("value")
+				local lodDist = XmlElement_Item.Item["lodDist"].GetAttribute("value")
+				local childLodDist = XmlElement_Item.Item["childLodDist"].GetAttribute("value")
+				local lodLevel = XmlElement_Item.Item["lodLevel"].InnerText
+				local numChildren = XmlElement_Item.Item["numChildren"].GetAttribute("value")
+				local priorityLevel = XmlElement_Item.Item["priorityLevel"].InnerText
 				local extensions = #() --NOT SUPPORTED
-				local ambientOcclusionMultiplier = XmlElement_CEntityDef.Item["ambientOcclusionMultiplier"].GetAttribute("value")
-				local artificialAmbientOcclusion = XmlElement_CEntityDef.Item["artificialAmbientOcclusion"].GetAttribute("value")
-				local tintValue = XmlElement_CEntityDef.Item["tintValue"].GetAttribute("value")
+				local ambientOcclusionMultiplier = XmlElement_Item.Item["ambientOcclusionMultiplier"].GetAttribute("value")
+				local artificialAmbientOcclusion = XmlElement_Item.Item["artificialAmbientOcclusion"].GetAttribute("value")
+				local tintValue = XmlElement_Item.Item["tintValue"].GetAttribute("value")
 	
 				local Entity = CEntityDef archetypeName:archetypeName flags:flags guid:guid _position:_position _rotation:_rotation scaleXY:scaleXY scaleZ:scaleZ parentIndex:parentIndex lodDist:lodDist childLodDist:childLodDist lodLevel:lodLevel numChildren:numChildren priorityLevel:priorityLevel extensions:extensions ambientOcclusionMultiplier:ambientOcclusionMultiplier artificialAmbientOcclusion:artificialAmbientOcclusion tintValue:tintValue
 				append entities Entity
