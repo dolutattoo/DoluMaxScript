@@ -40,6 +40,7 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 		button 'btn_copy_material' "Copy Lib" width:60 height:20 pos:[125,170]
 		button 'btn_paste_material' "Paste Lib" width:60 height:20 pos:[190,170]
 		button 'btn_convert_material_to_col' "Default Collision Material" width:140 height:20 pos:[255,170] tooltip:"Apply collision default material to selected object"
+		button 'btn_apply_generic_flags' "Collision flags" width:110 height:20 pos:[400,170] tooltip:"Apply generic collision flags to selected objects"
 	
 	/* TODO- IMPORT EXPORT SHORTCUTS
 	 
@@ -130,45 +131,35 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 	*/
 	---------------------------
 	-- APPLY MODIFIERS
-	on btn_gamemeshmodifier pressed do
-	(
+	on btn_gamemeshmodifier pressed do (
 		gamemesh_GIMS_model()
 	)
 
-	on btn_meshmodifier pressed do
-	(
+	on btn_meshmodifier pressed do (
 		meshmodifier_GIMS_composite()
 	)
 
-	on btn_primitive_box_col pressed do
-	(
+	on btn_primitive_box_col pressed do (
 		primitive_box_col()
 	)
 	---------------------------
 	-- CREATE MODELS/COMPOSITES
 	
 	global embedCollision = false
-	on embedcol changed theState do
-	(
+	on embedcol changed theState do (
 		embedCollision = theState
 	)
 	
-	on btn_createmodel pressed do
-	(
-		for obj in selection do
-		(
-			if embedCollision then
-			(
-				if(classof(obj) == Editable_Poly) or (classof(obj) == Editable_Mesh) then
-				(	
+	on btn_createmodel pressed do (
+		for obj in selection do (
+			if embedCollision then (
+				if(classof(obj) == Editable_Poly) or (classof(obj) == Editable_Mesh) then (	
 					create_GIMS_model_withEmbedCol()
 				)else messagebox "Object needs to be set as Editable Poly or Editable Mesh."
-			)else
-			(
-				if(classof(obj) == Editable_Poly) or (classof(obj) == Editable_Mesh) then
-				(	
+			) else (
+				if (classof(obj) == Editable_Poly) or (classof(obj) == Editable_Mesh) then (	
 					create_GIMS_model()
-				)else messagebox "Object needs to be set as Editable Poly or Editable Mesh."
+				) else messagebox "Object needs to be set as Editable Poly or Editable Mesh."
 			)
 		)
 	)
@@ -179,13 +170,10 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 	)
 	
 	global collisionMaterial = false
-	on colmaterial changed theState do
-	(
-		if theState then
-		(
+	on colmaterial changed theState do (
+		if theState then (
 			collisionMaterial = true
-		)else 
-		(	
+		) else (	
 			collisionMaterial = false
 		)
 	)
@@ -195,6 +183,49 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 			o.material = EGIMS_V_Material()
 			messagebox "Material applied."
 		)
+	)
+	
+	on btn_apply_generic_flags pressed do (
+		for obj in selection do (
+
+			-- If selection is a mesh and doesnt have the Mesh modifier, apply it first.
+			if ((classof(obj) == Editable_Mesh) or (classof(obj) == Editable_Poly)) then (
+				
+				-- Testing with delete the mesh modifier if there is one before to apply a fresh one again
+				if (classOf(obj.modifiers[#Mesh]) == EGIMS_V_CollisionMesh) then (
+					deleteModifier obj (obj.modifiers[#Mesh])
+				)
+
+				addmodifier obj (EGIMS_V_CollisionMesh())
+			)
+
+			-- If collision have Mesh modifier or is a Collision Box
+			if (classOf(obj.modifiers[#Mesh]) == EGIMS_V_CollisionMesh) or (classOf(obj) == EGIMS_V_Col_Box) then (
+
+				local flagsON = #(7,8,10,13,14)
+				local flagsOFF = #(1,2,3,4,5,6,9,11,12,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32)
+
+				-- If Mesh modifier, set VertOffset part to 0.0025
+				if ((classof(obj) == Editable_Mesh) or (classof(obj) == Editable_Poly)) and (classOf(obj.modifiers[#Mesh]) == EGIMS_V_CollisionMesh) then (
+					for i=1 to flagsON.count do (
+						obj.modifiers[#Mesh].Flags1[flagsON[i]] = on
+					)
+					for j=1 to flagsOFF.count do (
+						obj.modifiers[#Mesh].Flags1[flagsOFF[j]] = off
+					)
+					obj.modifiers[#Mesh].VertexOffset_UnkPart = 0.0025 as float
+					
+				) else (
+					for i=1 to flagsON.count do (
+						obj.Flags1[flagsON[i]] = on
+					)
+					for j=1 to flagsOFF.count do (
+						obj.Flags1[flagsOFF[j]] = off
+					)
+				)
+			) else messagebox "Object needs to be an Editable Poly, an Editable Mesh or a Col Box."
+		)
+		print "[DoluMaxScript] Flags succefully applied!"
 	)
 	
 	---------------------------
@@ -215,7 +246,6 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 	-- TOOLS
 	
 	global vColor = [0,255,0]
-
 	on VertexColorPicker changed new_col do  (
 		vColor = new_col
 	)
@@ -374,7 +404,6 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 		checkbox myCheckBox "Add ' , ' (for CodeWalker use)" align:#center
 
 		global putCommas = false
-
 		on myCheckBox changed theState do (
 			if theState then (
 				putCommas = true
@@ -382,7 +411,6 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 				putCommas = false
 			)
 		)
-
 
 		on addSelectionBtn pressed do (	
 			try
@@ -400,13 +428,12 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 		on clearSelectionBtn pressed do (	
 			vertexText.text = ""
 		)
-		
+
 		on copyBtn pressed do (	
 			local str = vertexText.text
 			retCode = setclipboardText str
 		)
  	)
-
 	on btn_Vertices2Portals pressed do
     (
         if (not MKTools.open or not MKTools.isDisplayed) do (
@@ -420,9 +447,9 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 	)
 )
 
--- MacroScript DoluMaxScriptGUI ButtonText:"Dolu Max Script" Category:"Dolu Max Scripts" (
+MacroScript DoluMaxScriptGUI ButtonText:"Dolu Max Script" Category:"Dolu Max Scripts" (
 	createdialog DOLU_MAX_SCRIPT 600 230 935 690
--- )
+)
 
 utility DOLU_MAX_SCRIPT2 "Dolu Max Script" (
 	button open_menu "Open" width:125 height:30
