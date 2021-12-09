@@ -42,9 +42,8 @@ fn meshmodifier_GIMS_composite=(
 
 fn primitive_box_col=(
 
-	for j=1 to selection.count do (	
-		local i = selection[j]
-
+	for i in selection do (
+		
 		-- calculating bounding box of the geometry
 		bb = nodeGetBoundingBox i i.transform
 		size = (bb[2]-bb[1])
