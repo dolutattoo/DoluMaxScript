@@ -15,3 +15,5 @@ Startup/texeldensitytool.ms
 Startup/TriangulateSelection.ms
 Startup/ValidateSceneRefHierarchy_stub.ms
 Startup/weld.ms
+texeldensitytool.ms
+Startup/copy_modifiers.ms
