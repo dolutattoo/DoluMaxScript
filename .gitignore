@@ -17,3 +17,9 @@ Startup/ValidateSceneRefHierarchy_stub.ms
 Startup/weld.ms
 texeldensitytool.ms
 Startup/copy_modifiers.ms
+Startup/ofio.v.anim.ms
+Startup/ofio.v.gui.ms
+Startup/ofio.v.log.ms
+Startup/ofio.v.main.ms
+Startup/ofio.v.utils.ms
+Startup/ofio.v.version.ms
