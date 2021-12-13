@@ -447,9 +447,7 @@ rollout DOLU_MAX_SCRIPT "Dolu MaxScript"
 	)
 )
 
-MacroScript DoluMaxScriptGUI ButtonText:"Dolu Max Script" Category:"Dolu Max Scripts" (
-	createdialog DOLU_MAX_SCRIPT 600 230 935 690
-)
+createdialog DOLU_MAX_SCRIPT 600 230 935 690
 
 utility DOLU_MAX_SCRIPT2 "Dolu Max Script" (
 	button open_menu "Open" width:125 height:30
